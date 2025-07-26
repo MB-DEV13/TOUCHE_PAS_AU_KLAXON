@@ -1,6 +1,4 @@
 <?php
-// app/Models/TrajetModel.php
-
 require_once __DIR__ . '/../Core/Database.php';
 
 class TrajetModel {
@@ -30,8 +28,10 @@ class TrajetModel {
         $now = date('Y-m-d H:i:s');
         $sql = "SELECT 
                     t.id_trajet,
+                    ad.id_agence AS id_agence_depart,
                     ad.nom AS depart, 
                     t.date_heure_depart AS date_depart,
+                    aa.id_agence AS id_agence_arrivee,
                     aa.nom AS arrivee, 
                     t.date_heure_arrivee AS date_arrivee,
                     t.nb_places_dispo AS places_disponibles,
@@ -82,6 +82,46 @@ class TrajetModel {
             $date_arrivee,
             $places, // total
             $places  // dispo
+        ]);
+    }
+
+    // Trouver un trajet par ID
+    public static function findById($id)
+    {
+        $pdo = Database::getInstance();
+        $stmt = $pdo->prepare("SELECT * FROM trajet WHERE id_trajet = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
+
+    // Supprimer un trajet
+    public static function deleteTrajet($id)
+    {
+        $pdo = Database::getInstance();
+        $stmt = $pdo->prepare("DELETE FROM trajet WHERE id_trajet = ?");
+        $stmt->execute([$id]);
+    }
+
+    // Mettre à jour un trajet (pour la modale édition)
+    public static function updateTrajet($id, $id_depart, $id_arrivee, $date_depart, $date_arrivee, $places) {
+        $pdo = Database::getInstance();
+        $sql = "UPDATE trajet SET 
+                id_agence_depart = ?, 
+                id_agence_arrivee = ?, 
+                date_heure_depart = ?, 
+                date_heure_arrivee = ?, 
+                nb_places_total = ?, 
+                nb_places_dispo = ?
+            WHERE id_trajet = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            $id_depart,   // id_agence_depart
+            $id_arrivee,  // id_agence_arrivee
+            $date_depart,
+            $date_arrivee,
+            $places,
+            $places, // reset places dispo = total
+            $id
         ]);
     }
 }
