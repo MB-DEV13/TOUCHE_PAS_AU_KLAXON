@@ -11,6 +11,22 @@ spl_autoload_register(function ($class) {
 
 // ROUTEUR BASIQUE : toujours HomeController@index pour le test
 require_once __DIR__ . '/../app/Controllers/HomeController.php';
+require_once __DIR__ . '/../app/Controllers/AuthController.php';
 
-$controller = new HomeController();
-$controller->index();
+// Simple router
+$uri = $_SERVER['REQUEST_URI'];
+
+if (strpos($uri, '/login') !== false) {
+    $controller = new AuthController();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $controller->login();
+    } else {
+        $controller->loginForm();
+    }
+} elseif (strpos($uri, '/logout') !== false) {
+    $controller = new AuthController();
+    $controller->logout();
+} else {
+    $controller = new HomeController();
+    $controller->index();
+}
