@@ -12,6 +12,7 @@ $body-bg: #f1f8fc; // Couleur de fond générale
 
 // Import de Bootstrap (pour utiliser les variables/couleurs, etc.)
 @import "bootstrap/scss/bootstrap";
+@import "~bootstrap-icons/font/bootstrap-icons.css";
 
 // Tes styles personnalisés ici
 body {
