@@ -9,7 +9,8 @@ spl_autoload_register(function ($class) {
     }
 });
 
-
 // ROUTEUR BASIQUE : toujours HomeController@index pour le test
+require_once __DIR__ . '/../app/Controllers/HomeController.php';
+
 $controller = new HomeController();
 $controller->index();
