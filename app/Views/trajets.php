@@ -2,6 +2,15 @@
 
 <div class="container mt-4">
 
+  <?php
+  // Affiche le message flash s'il existe (à placer juste sous le header)
+  if (function_exists('get_flash_message')) {
+    if ($msg = get_flash_message()) {
+      echo '<div class="alert alert-success" style="border-radius: 10px;">' . htmlspecialchars($msg) . '</div>';
+    }
+  }
+  ?>
+
   <?php if (empty($trajets)): ?>
     <h2 class="mb-4">Aucun trajet actuellement</h2>
   <?php else: ?>
@@ -9,7 +18,7 @@
   <?php endif; ?>
 
   <div class="table-responsive">
-    <table class="table table-bordered table-striped table-hover align-middle rounded overflow-hidden">
+    <table class="table table-bordered table-striped table-hover align-middle rounded overflow-hidden" style="border-radius: 12px; overflow: hidden;">
       <thead class="table-dark">
         <tr>
           <th>Départ</th>
@@ -19,16 +28,13 @@
           <th>Date</th>
           <th>Heure</th>
           <th>Places</th>
-          <!-- Si au moins un trajet, affiche la colonne action -->
-          <?php if (!empty($trajets)): ?>
-            <th></th>
-          <?php endif; ?>
+          <th><!-- Action --></th>
         </tr>
       </thead>
       <tbody>
         <?php if (empty($trajets)): ?>
           <tr>
-            <td colspan="7" class="text-center">Aucun trajet disponible</td>
+            <td colspan="8" class="text-center">Aucun trajet disponible</td>
           </tr>
         <?php else: ?>
           <?php foreach ($trajets as $trajet): ?>
@@ -42,9 +48,9 @@
               <td><?= (int)$trajet['places_disponibles'] ?></td>
               <td class="text-center">
                 <!-- Voir les infos (modale) -->
-                <button 
-                  class="btn btn-link p-0 me-2" 
-                  data-bs-toggle="modal" 
+                <button
+                  class="btn btn-link p-0 me-2"
+                  data-bs-toggle="modal"
                   data-bs-target="#modalInfos<?= $trajet['id_trajet'] ?>"
                   title="Voir infos">
                   <span class="bi bi-eye"></span>
@@ -54,8 +60,8 @@
                   <a href="/TOUCHE_PAS_AU_KLAXON/public/trajet/edit/<?= $trajet['id_trajet'] ?>" class="btn btn-link p-0 me-2" title="Modifier">
                     <span class="bi bi-pencil"></span>
                   </a>
-                  <!-- Supprimer -->
-                  <a href="/TOUCHE_PAS_AU_KLAXON/public/trajet/delete/<?= $trajet['id_trajet'] ?>" class="btn btn-link p-0" title="Supprimer" onclick="return confirm('Supprimer ce trajet ?')">
+                  <!-- Supprimer (direct, sans confirm JS) -->
+                  <a href="/TOUCHE_PAS_AU_KLAXON/public/trajet/delete/<?= $trajet['id_trajet'] ?>" class="btn btn-link p-0" title="Supprimer">
                     <span class="bi bi-trash"></span>
                   </a>
                 <?php endif; ?>
@@ -89,4 +95,5 @@
 </div>
 
 <?php require __DIR__ . '/layouts/footer.php'; ?>
+
 
