@@ -32,6 +32,13 @@ if (strpos($uri, '/login') !== false) {
     $controller = new TrajetController();
     $controller->mesTrajets();
 
+}elseif (strpos($uri, '/trajet/creer') !== false) {
+    $controller = new TrajetController();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $controller->creerTrajet();
+    } else {
+        $controller->formCreerTrajet();
+    }
 } else {
     $controller = new HomeController();
     $controller->index();
