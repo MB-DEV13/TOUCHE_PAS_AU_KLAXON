@@ -9,11 +9,13 @@ spl_autoload_register(function ($class) {
     }
 });
 
-// ROUTEUR BASIQUE : toujours HomeController@index pour le test
+// ROUTEUR
 require_once __DIR__ . '/../app/Controllers/HomeController.php';
 require_once __DIR__ . '/../app/Controllers/AuthController.php';
 
-// Simple router
+// Ajoute ici l'import du TrajetController :
+require_once __DIR__ . '/../app/Controllers/TrajetController.php';
+
 $uri = $_SERVER['REQUEST_URI'];
 
 if (strpos($uri, '/login') !== false) {
@@ -26,7 +28,12 @@ if (strpos($uri, '/login') !== false) {
 } elseif (strpos($uri, '/logout') !== false) {
     $controller = new AuthController();
     $controller->logout();
+} elseif (strpos($uri, '/trajets') !== false) {
+    $controller = new TrajetController();
+    $controller->mesTrajets();
+
 } else {
     $controller = new HomeController();
     $controller->index();
 }
+
