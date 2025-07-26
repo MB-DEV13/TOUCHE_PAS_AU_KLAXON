@@ -1,27 +1,50 @@
-<!-- app/Views/home.php -->
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Hello World MVC</title>
-    <link rel="stylesheet" href="/TOUCHE_PAS_AU_KLAXON/public/assets/css/style.css">
-</head>
-<body>
-    <h1>Bienvenue sur votre projet PHP MVC !</h1>
-    <div class="alert alert-primary">Bootstrap fonctionne !</div>
-    <p>Structure OK 🎉</p>
-    <button class="btn btn-primary">Bouton Bleu</button>
+<?php require __DIR__ . '/layouts/header.php'; ?>
 
-<div class="alert alert-danger">Alerte rouge</div>
-<button class="btn btn-danger">Bouton Bleu</button>
-    <div class="alert alert-success">Alerte verte</div>
-    <button class="btn btn-success">Bouton Vert</button>
-    <div class="alert alert-info">Alerte info</div>
-    <button class="btn btn-info">Bouton Info</button>
-    <div class="alert alert-dark">Alerte sombre</div>
-    <button class="btn btn-dark">Bouton Sombre</button>
+<div class="container mt-4">
+    <h3 class="mb-4" style="font-family:inherit;">
+        Pour obtenir plus d'informations sur un trajet, veuillez vous connecter
+    </h3>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover align-middle rounded overflow-hidden">
+        <thead class="table-dark">
+          <tr>
+            <th>Départ</th>
+            <th>Date</th>
+            <th>Heure</th>
+            <th>Destination</th>
+            <th>Date</th>
+            <th>Heure</th>
+            <th>Places</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if (!empty($trajets)): ?>
+            <?php foreach ($trajets as $t): 
+              $dateDep = date('d/m/y', strtotime($t['date_heure_depart']));
+              $heureDep = date('H:i', strtotime($t['date_heure_depart']));
+              $dateArr = date('d/m/y', strtotime($t['date_heure_arrivee']));
+              $heureArr = date('H:i', strtotime($t['date_heure_arrivee']));
+            ?>
+            <tr>
+              <td><?= htmlspecialchars($t['depart']) ?></td>
+              <td><?= $dateDep ?></td>
+              <td><?= $heureDep ?></td>
+              <td><?= htmlspecialchars($t['arrivee']) ?></td>
+              <td><?= $dateArr ?></td>
+              <td><?= $heureArr ?></td>
+              <td><?= (int)$t['nb_places_dispo'] ?></td>
+            </tr>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <tr>
+              <td colspan="7" class="text-center">Aucun trajet disponible</td>
+            </tr>
+          <?php endif; ?>
+        </tbody>
+      </table>
+    </div>
+</div>
 
-    <p>Pour aller plus loin, consultez la documentation de Bootstrap.</p>
-</body>
-</html>
+<?php require __DIR__ . '/layouts/footer.php'; ?>
+
 
