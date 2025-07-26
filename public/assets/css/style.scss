@@ -35,3 +35,23 @@ body {
 .btn-login {
   font-weight: bold;
 }
+
+.admin-btn {
+  border-radius: 12px 8px 12px 8px;
+  font-weight: 500;
+  padding: 6px 28px;
+  background: #49505e;
+  color: #fff !important;
+  border: none;
+  box-shadow: none;
+  transition: background 0.2s;
+  &:hover,
+  &:focus {
+    background: #384050;
+    color: #fff !important;
+  }
+}
+
+.login-box {
+  max-width: 400px;
+}
