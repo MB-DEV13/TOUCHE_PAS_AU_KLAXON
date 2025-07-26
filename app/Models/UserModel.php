@@ -11,6 +11,7 @@ class UserModel {
         $pdo = Database::getInstance();
         $stmt = $pdo->prepare("SELECT * FROM utilisateur WHERE email = ?");
         $stmt->execute([$email]);
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC); // Important : fetch en tableau associatif
     }
 }
+
