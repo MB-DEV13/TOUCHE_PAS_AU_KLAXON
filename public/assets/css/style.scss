@@ -1,0 +1,20 @@
+// public/assets/css/style.scss
+// Palette personnalisée, à placer AVANT l'import de Bootstrap
+$primary: #0074c7;
+$secondary: #00497c;
+$success: #82b864;
+$danger: #cd2c2e;
+$info: #f1f8fc;
+$dark: #384050;
+
+// Variables de backgrounds & autres si tu veux
+$body-bg: #f1f8fc; // Couleur de fond générale
+
+// Import de Bootstrap (pour utiliser les variables/couleurs, etc.)
+@import "bootstrap/scss/bootstrap";
+
+// Tes styles personnalisés ici
+body {
+  background: #f1f8fc;
+  font-family: Arial, sans-serif;
+}
