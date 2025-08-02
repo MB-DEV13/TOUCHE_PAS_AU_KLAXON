@@ -12,7 +12,9 @@ spl_autoload_register(function ($class) {
 // ROUTEUR
 $uri = $_SERVER['REQUEST_URI'];
 
-// ROUTES D'AUTH
+// -----------------------------------------
+//               AUTH
+// -----------------------------------------
 if (strpos($uri, '/login') !== false) {
     $controller = new AuthController();
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -25,6 +27,36 @@ if (strpos($uri, '/login') !== false) {
     $controller = new AuthController();
     $controller->logout();
 
+// -----------------------------------------
+//              ADMIN
+// -----------------------------------------
+} elseif (strpos($uri, '/admin/dashboard') !== false) {
+    $controller = new AdminController();
+    $controller->dashboard();
+
+} elseif (preg_match('#/admin/agence/create#', $uri)) {
+    $controller = new AdminController();
+    $controller->createAgence();
+
+} elseif (preg_match('#/admin/agence/edit/(\d+)#', $uri, $m)) {
+    $controller = new AdminController();
+    $controller->updateAgence($m[1]);
+
+} elseif (preg_match('#/admin/agence/delete/(\d+)#', $uri, $m)) {
+    $controller = new AdminController();
+    $controller->deleteAgence($m[1]);
+
+} elseif (preg_match('#/admin/trajet/edit/(\d+)#', $uri, $m)) {
+    $controller = new AdminController();
+    $controller->editTrajet($m[1]);
+
+} elseif (preg_match('#/admin/trajet/delete/(\d+)#', $uri, $m)) {
+    $controller = new AdminController();
+    $controller->deleteTrajet($m[1]);
+
+// -----------------------------------------
+//               TRAJETS (USER)
+// -----------------------------------------
 } elseif (strpos($uri, '/trajets') !== false) {
     $controller = new TrajetController();
     $controller->mesTrajets();
@@ -39,14 +71,19 @@ if (strpos($uri, '/login') !== false) {
 
 } elseif (preg_match('#/trajet/edit/(\d+)#', $uri, $matches)) {
     $controller = new TrajetController();
-    $controller->editTrajet($matches[1]); // Méthode à implémenter
+    $controller->editTrajet($matches[1]);
 
 } elseif (preg_match('#/trajet/delete/(\d+)#', $uri, $matches)) {
     $controller = new TrajetController();
-    $controller->deleteTrajet($matches[1]); // Méthode à implémenter
+    $controller->deleteTrajet($matches[1]);
 
+// -----------------------------------------
+//          HOME (par défaut)
+// -----------------------------------------
 } else {
     $controller = new HomeController();
     $controller->index();
 }
+
+
 
