@@ -1,7 +1,6 @@
 <?php
 // app/Controllers/AuthController.php
 
-// Démarre la session proprement (évite les warnings si déjà active)
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -11,12 +10,15 @@ require_once __DIR__ . '/../Models/UserModel.php';
 class AuthController {
     /**
      * Affiche le formulaire de connexion.
-     * Si déjà connecté, redirige vers l'accueil.
+     * Si déjà connecté, redirige selon le rôle.
      */
     public function loginForm($error = '') {
         if (!empty($_SESSION['user'])) {
-            header("Location: /TOUCHE_PAS_AU_KLAXON/public/trajets");
-
+            if ($_SESSION['user']['role'] === 'admin') {
+                header("Location: /TOUCHE_PAS_AU_KLAXON/public/admin/dashboard");
+            } else {
+                header("Location: /TOUCHE_PAS_AU_KLAXON/public/trajets");
+            }
             exit;
         }
         require __DIR__ . '/../Views/login.php';
@@ -28,7 +30,6 @@ class AuthController {
     public function login() {
         if (!empty($_POST['email']) && !empty($_POST['password'])) {
             $user = UserModel::findByEmail($_POST['email']);
-            
             if ($user && password_verify($_POST['password'], $user['password'])) {
                 // Connexion réussie
                 $_SESSION['user'] = [
@@ -38,7 +39,12 @@ class AuthController {
                     'email'  => $user['email'],
                     'role'   => $user['role']
                 ];
-                header("Location: /TOUCHE_PAS_AU_KLAXON/public/trajets");
+                // Redirection selon rôle
+                if ($user['role'] === 'admin') {
+                    header("Location: /TOUCHE_PAS_AU_KLAXON/public/admin/dashboard");
+                } else {
+                    header("Location: /TOUCHE_PAS_AU_KLAXON/public/trajets");
+                }
                 exit;
             } else {
                 $this->loginForm("Identifiants invalides.");
@@ -57,5 +63,6 @@ class AuthController {
         exit;
     }
 }
+
 
 
