@@ -56,3 +56,24 @@ body {
 .login-box {
   max-width: 400px;
 }
+
+/* cohérence du menu sur mobile */
+@media (max-width: 970px) {
+  .navbar-nav .btn,
+  .navbar-nav .nav-link {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    text-align: left;
+  }
+}
+
+/* Icône burger visible même sans Bootstrap natif */
+.navbar-toggler-icon {
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  vertical-align: middle;
+  background: no-repeat center center;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%2856,64,80,1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
