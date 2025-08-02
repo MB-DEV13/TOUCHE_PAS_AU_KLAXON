@@ -18,7 +18,7 @@
   <?php endif; ?>
 
   <div class="table-responsive">
-    <table class="table table-bordered table-striped table-hover align-middle rounded overflow-hidden" style="border-radius: 12px; overflow: hidden;">
+    <table class="table table-bordered table-striped table-hover align-middle rounded overflow-hidden mb-0">
       <thead class="table-dark">
         <tr>
           <th>Départ</th>
@@ -28,7 +28,7 @@
           <th>Date</th>
           <th>Heure</th>
           <th>Places</th>
-          <th><!-- Action --></th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -65,7 +65,7 @@
                     <span class="bi bi-pencil"></span>
                   </button>
                   <!-- Supprimer (direct) -->
-                  <a href="/TOUCHE_PAS_AU_KLAXON/public/trajet/delete/<?= $trajet['id_trajet'] ?>" class="btn btn-link p-0" title="Supprimer">
+                  <a href="/TOUCHE_PAS_AU_KLAXON/public/trajet/delete/<?= $trajet['id_trajet'] ?>" class="btn btn-link p-0 text-danger" title="Supprimer">
                     <span class="bi bi-trash"></span>
                   </a>
                 <?php endif; ?>
