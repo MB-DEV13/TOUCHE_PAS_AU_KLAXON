@@ -18,11 +18,18 @@
           </tr>
         </thead>
         <tbody>
-          <?php if (!empty($trajets)): ?>
-            <?php foreach ($trajets as $t): 
-              $dateDep = date('d/m/y', strtotime($t['date_heure_depart']));
+          <?php
+          /**
+           * Affichage des trajets disponibles (accueil non connecté).
+           * Pas d'action possible ni d'infos créateur.
+           *
+           * @var array $trajets Liste des trajets à venir (array).
+           */
+          if (!empty($trajets)): ?>
+            <?php foreach ($trajets as $t):
+              $dateDep  = date('d/m/y', strtotime($t['date_heure_depart']));
               $heureDep = date('H:i', strtotime($t['date_heure_depart']));
-              $dateArr = date('d/m/y', strtotime($t['date_heure_arrivee']));
+              $dateArr  = date('d/m/y', strtotime($t['date_heure_arrivee']));
               $heureArr = date('H:i', strtotime($t['date_heure_arrivee']));
             ?>
             <tr>
@@ -46,5 +53,6 @@
 </div>
 
 <?php require __DIR__ . '/layouts/footer.php'; ?>
+
 
 

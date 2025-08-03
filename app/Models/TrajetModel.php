@@ -1,9 +1,22 @@
 <?php
+
 require_once __DIR__ . '/../Core/Database.php';
 
-class TrajetModel {
-    // Liste des trajets à venir avec des places disponibles (pour page d'accueil publique)
-    public static function getTrajetsDisponibles() {
+/**
+ * Modèle de gestion des trajets.
+ *
+ * Fournit toutes les méthodes CRUD et requêtes de consultation
+ * pour les trajets dans l'application.
+ */
+class TrajetModel
+{
+    /**
+     * Récupère la liste des trajets à venir avec des places disponibles
+     *
+     * @return array Liste des trajets (tableau associatif).
+     */
+    public static function getTrajetsDisponibles(): array
+    {
         $pdo = Database::getInstance();
         $now = date('Y-m-d H:i:s');
         $sql = "SELECT 
@@ -19,11 +32,17 @@ class TrajetModel {
                 ORDER BY t.date_heure_depart ASC";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$now]);
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Liste des trajets à venir avec infos créateur (pour utilisateur connecté)
-    public static function getTrajetsDisponiblesAvecInfos() {
+    /**
+     * Récupère la liste des trajets à venir avec informations sur le créateur.
+     * (Pour l'utilisateur connecté ou admin.)
+     *
+     * @return array Liste des trajets enrichis (tableau associatif).
+     */
+    public static function getTrajetsDisponiblesAvecInfos(): array
+    {
         $pdo = Database::getInstance();
         $now = date('Y-m-d H:i:s');
         $sql = "SELECT 
@@ -49,18 +68,34 @@ class TrajetModel {
                 ORDER BY t.date_heure_depart ASC";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$now]);
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Liste des agences
-    public static function getAgences() {
+    /**
+     * Récupère la liste de toutes les agences.
+     *
+     * @return array Tableau d'agences.
+     */
+    public static function getAgences(): array
+    {
         $pdo = Database::getInstance();
         $stmt = $pdo->query("SELECT id_agence, nom FROM agence ORDER BY nom ASC");
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Ajouter un trajet en BDD
-    public static function ajouterTrajet($id_createur, $id_depart, $id_arrivee, $date_depart, $date_arrivee, $places) {
+    /**
+     * Ajoute un trajet à la base de données.
+     *
+     * @param int $id_createur     ID de l'utilisateur créateur.
+     * @param int $id_depart       ID de l'agence de départ.
+     * @param int $id_arrivee      ID de l'agence d'arrivée.
+     * @param string $date_depart  Date et heure de départ (format Y-m-d H:i:s).
+     * @param string $date_arrivee Date et heure d'arrivée (format Y-m-d H:i:s).
+     * @param int $places          Nombre de places (total et dispo, même valeur à la création).
+     * @return void
+     */
+    public static function ajouterTrajet(int $id_createur, int $id_depart, int $id_arrivee, string $date_depart, string $date_arrivee, int $places): void
+    {
         $pdo = Database::getInstance();
         $sql = "INSERT INTO trajet (
                     id_createur, 
@@ -74,36 +109,57 @@ class TrajetModel {
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
-            $id_createur,   // id_createur
-            $id_createur,   // id_contact (même valeur que créateur)
+            $id_createur,
+            $id_createur,
             $id_depart,
             $id_arrivee,
             $date_depart,
             $date_arrivee,
-            $places, // total
-            $places  // dispo
+            $places,
+            $places
         ]);
     }
 
-    // Trouver un trajet par ID
-    public static function findById($id)
+    /**
+     * Trouve un trajet par son ID.
+     *
+     * @param int $id  L'identifiant du trajet.
+     * @return array|false Tableau associatif du trajet ou false si non trouvé.
+     */
+    public static function findById(int $id)
     {
         $pdo = Database::getInstance();
         $stmt = $pdo->prepare("SELECT * FROM trajet WHERE id_trajet = ?");
         $stmt->execute([$id]);
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Supprimer un trajet
-    public static function deleteTrajet($id)
+    /**
+     * Supprime un trajet par son identifiant.
+     *
+     * @param int $id  L'identifiant du trajet à supprimer.
+     * @return void
+     */
+    public static function deleteTrajet(int $id): void
     {
         $pdo = Database::getInstance();
         $stmt = $pdo->prepare("DELETE FROM trajet WHERE id_trajet = ?");
         $stmt->execute([$id]);
     }
 
-    // Mettre à jour un trajet (pour la modale édition)
-    public static function updateTrajet($id, $id_depart, $id_arrivee, $date_depart, $date_arrivee, $places) {
+    /**
+     * Met à jour un trajet (utilisé depuis la modale d'édition).
+     *
+     * @param int $id              Identifiant du trajet.
+     * @param int $id_depart       ID agence départ.
+     * @param int $id_arrivee      ID agence arrivée.
+     * @param string $date_depart  Date et heure départ (Y-m-d H:i:s).
+     * @param string $date_arrivee Date et heure arrivée (Y-m-d H:i:s).
+     * @param int $places          Nombre de places (total/dispo remis à ce nombre).
+     * @return void
+     */
+    public static function updateTrajet(int $id, int $id_depart, int $id_arrivee, string $date_depart, string $date_arrivee, int $places): void
+    {
         $pdo = Database::getInstance();
         $sql = "UPDATE trajet SET 
                 id_agence_depart = ?, 
@@ -115,16 +171,17 @@ class TrajetModel {
             WHERE id_trajet = ?";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
-            $id_depart,   // id_agence_depart
-            $id_arrivee,  // id_agence_arrivee
+            $id_depart,
+            $id_arrivee,
             $date_depart,
             $date_arrivee,
             $places,
-            $places, // reset places dispo = total
+            $places,
             $id
         ]);
     }
 }
+
 
 
 

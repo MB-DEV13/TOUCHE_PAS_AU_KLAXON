@@ -1,15 +1,22 @@
 <?php
+
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 require_once __DIR__ . '/../Models/UserModel.php';
 require_once __DIR__ . '/../Models/AgenceModel.php';
 require_once __DIR__ . '/../Models/TrajetModel.php';
 
-// Gestion simple des flash messages
+// --- Gestion des flash messages ---
 if (!function_exists('set_flash_message')) {
+    /**
+     * Définit un message flash.
+     */
     function set_flash_message($msg) {
         $_SESSION['flash_message'] = $msg;
     }
+    /**
+     * Récupère le message flash (et le supprime).
+     */
     function get_flash_message() {
         if (!empty($_SESSION['flash_message'])) {
             $msg = $_SESSION['flash_message'];
@@ -20,8 +27,14 @@ if (!function_exists('set_flash_message')) {
     }
 }
 
+/**
+ * Contrôleur administrateur - gère dashboard, agences, trajets
+ */
 class AdminController
 {
+    /**
+     * Vérifie que l'utilisateur est admin, sinon redirige.
+     */
     private function checkAdmin() {
         if (empty($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
             header("Location: /TOUCHE_PAS_AU_KLAXON/public/login");
@@ -29,15 +42,20 @@ class AdminController
         }
     }
 
+    /**
+     * Affiche le tableau de bord admin
+     */
     public function dashboard() {
         $this->checkAdmin();
         $users = UserModel::getAll();
         $agences = AgenceModel::getAll();
-        $trajets = TrajetModel::getTrajetsDisponiblesAvecInfos(); // id_agence_depart, id_agence_arrivee
+        $trajets = TrajetModel::getTrajetsDisponiblesAvecInfos();
         require __DIR__ . '/../Views/admin_dashboard.php';
     }
 
-    // CRUD agences
+    /**
+     * Crée une agence (POST)
+     */
     public function createAgence() {
         $this->checkAdmin();
         $nom = trim($_POST['nom'] ?? '');
@@ -58,6 +76,9 @@ class AdminController
         exit;
     }
 
+    /**
+     * Modifie une agence (POST)
+     */
     public function updateAgence($id) {
         $this->checkAdmin();
         $nom = trim($_POST['nom'] ?? '');
@@ -69,17 +90,31 @@ class AdminController
         exit;
     }
 
+    /**
+     * Supprime une agence
+     */
     public function deleteAgence($id) {
         $this->checkAdmin();
         if ($id) {
-            AgenceModel::delete($id);
-            set_flash_message("Agence supprimée !");
+            $pdo = Database::getInstance();
+            // Vérifie si cette agence est utilisée dans des trajets (départ ou arrivée)
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM trajet WHERE id_agence_depart = ? OR id_agence_arrivee = ?");
+            $stmt->execute([$id, $id]);
+            $nb = $stmt->fetchColumn();
+            if ($nb > 0) {
+                set_flash_message("Erreur : impossible de supprimer cette agence car elle est utilisée dans des trajets.");
+            } else {
+                AgenceModel::delete($id);
+                set_flash_message("Agence supprimée !");
+            }
         }
         header('Location: /TOUCHE_PAS_AU_KLAXON/public/admin/dashboard');
         exit;
     }
 
-    // CRUD trajets (admin)
+    /**
+     * Supprime un trajet
+     */
     public function deleteTrajet($id) {
         $this->checkAdmin();
         if ($id) {
@@ -90,6 +125,9 @@ class AdminController
         exit;
     }
 
+    /**
+     * Modifie un trajet (POST depuis modale)
+     */
     public function editTrajet($id) {
         $this->checkAdmin();
 
@@ -122,3 +160,4 @@ class AdminController
         }
     }
 }
+
