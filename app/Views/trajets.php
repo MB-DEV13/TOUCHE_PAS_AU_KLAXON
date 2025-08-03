@@ -8,7 +8,7 @@
    */
   if (function_exists('get_flash_message')) {
     if ($msg = get_flash_message()) {
-      echo '<div class="alert alert-success" style="border-radius: 10px;">' . htmlspecialchars($msg) . '</div>';
+      echo '<div class="alert alert-success">' . htmlspecialchars($msg) . '</div>';
     }
   }
   ?>
