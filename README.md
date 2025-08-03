@@ -66,7 +66,7 @@ composer install
 
 ## Connexion administrateur et users
 
-- Un compte admin est fourni dans le dossier PDF remis avec ce projet (email/mot de passe par défaut).
+- Un compte admin et deux comptes utilisateurs sont fournis dans le dossier PDF remis avec ce projet (email/mot de passe par défaut).
 
 ---
 
