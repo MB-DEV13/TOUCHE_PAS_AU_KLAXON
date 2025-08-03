@@ -1,37 +1,48 @@
--- Création de la base
-CREATE DATABASE IF NOT EXISTS covoiturage CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE covoiturage;
+-- Création base de données + structure complète
 
--- Table agence
-CREATE TABLE agence (
-    id_agence INT PRIMARY KEY AUTO_INCREMENT,
-    nom VARCHAR(100) UNIQUE NOT NULL
-);
+CREATE DATABASE IF NOT EXISTS `covoiturage` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `covoiturage`;
 
--- Table utilisateur
-CREATE TABLE utilisateur (
-    id_user INT PRIMARY KEY AUTO_INCREMENT,
-    nom VARCHAR(100) NOT NULL,
-    prenom VARCHAR(100) NOT NULL,
-    telephone VARCHAR(20) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    role ENUM('user', 'admin') DEFAULT 'user'
-);
+-- Table `agence`
+CREATE TABLE `agence` (
+  `id_agence` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_agence`),
+  UNIQUE KEY `nom` (`nom`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Table trajet
-CREATE TABLE trajet (
-    id_trajet INT PRIMARY KEY AUTO_INCREMENT,
-    id_agence_depart INT NOT NULL,
-    id_agence_arrivee INT NOT NULL,
-    date_heure_depart DATETIME NOT NULL,
-    date_heure_arrivee DATETIME NOT NULL,
-    nb_places_total INT NOT NULL,
-    nb_places_dispo INT NOT NULL,
-    id_contact INT NOT NULL,
-    id_createur INT NOT NULL,
-    FOREIGN KEY (id_agence_depart) REFERENCES agence(id_agence),
-    FOREIGN KEY (id_agence_arrivee) REFERENCES agence(id_agence),
-    FOREIGN KEY (id_contact) REFERENCES utilisateur(id_user),
-    FOREIGN KEY (id_createur) REFERENCES utilisateur(id_user)
-);
+-- Table `utilisateur`
+CREATE TABLE `utilisateur` (
+  `id_user` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(100) NOT NULL,
+  `prenom` varchar(100) NOT NULL,
+  `telephone` varchar(20) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` enum('user','admin') DEFAULT 'user',
+  PRIMARY KEY (`id_user`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Table `trajet`
+CREATE TABLE `trajet` (
+  `id_trajet` int(11) NOT NULL AUTO_INCREMENT,
+  `id_agence_depart` int(11) NOT NULL,
+  `id_agence_arrivee` int(11) NOT NULL,
+  `date_heure_depart` datetime NOT NULL,
+  `date_heure_arrivee` datetime NOT NULL,
+  `nb_places_total` int(11) NOT NULL,
+  `nb_places_dispo` int(11) NOT NULL,
+  `id_contact` int(11) NOT NULL,
+  `id_createur` int(11) NOT NULL,
+  PRIMARY KEY (`id_trajet`),
+  KEY `id_agence_depart` (`id_agence_depart`),
+  KEY `id_agence_arrivee` (`id_agence_arrivee`),
+  KEY `id_contact` (`id_contact`),
+  KEY `id_createur` (`id_createur`),
+  CONSTRAINT `trajet_ibfk_1` FOREIGN KEY (`id_agence_depart`) REFERENCES `agence` (`id_agence`),
+  CONSTRAINT `trajet_ibfk_2` FOREIGN KEY (`id_agence_arrivee`) REFERENCES `agence` (`id_agence`),
+  CONSTRAINT `trajet_ibfk_3` FOREIGN KEY (`id_contact`) REFERENCES `utilisateur` (`id_user`),
+  CONSTRAINT `trajet_ibfk_4` FOREIGN KEY (`id_createur`) REFERENCES `utilisateur` (`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
