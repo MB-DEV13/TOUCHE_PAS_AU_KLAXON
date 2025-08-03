@@ -6,7 +6,7 @@
     <!-- Message flash de succès ou d'erreur -->
     <?php if (function_exists('get_flash_message')): ?>
       <?php if ($msg = get_flash_message()): ?>
-        <div class="alert alert-<?= strpos($msg, 'Erreur') === false ? 'success' : 'danger' ?>" style="border-radius: 10px;">
+        <div class="alert alert-<?= strpos($msg, 'Erreur') === false ? 'success' : 'danger' ?>">
           <?= htmlspecialchars($msg) ?>
         </div>
       <?php endif; ?>
