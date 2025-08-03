@@ -35,7 +35,7 @@ cd TOUCHE_PAS_AU_KLAXON
 
 ### 2. **Configurer la base de données**
 
-- Importer les deux fichiers SQL fournis :
+- Importer les deux fichiers SQL fournis dans le fichier `scripts` :
   - `create_db.sql` (création db + structure)
   - `seed_db.sql` (données initiales)
 
