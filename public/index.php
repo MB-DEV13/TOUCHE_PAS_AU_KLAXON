@@ -1,4 +1,8 @@
 <?php
+require_once __DIR__ . '/../app/Controllers/HomeController.php';
+require_once __DIR__ . '/../app/Controllers/AuthController.php';
+require_once __DIR__ . '/../app/Controllers/AdminController.php';
+require_once __DIR__ . '/../app/Controllers/TrajetController.php';
 
 // Autoload PSR-4 simple
 spl_autoload_register(function ($class) {
