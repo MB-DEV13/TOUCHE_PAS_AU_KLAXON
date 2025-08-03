@@ -1,15 +1,27 @@
 <?php
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 require_once __DIR__ . '/../Models/TrajetModel.php';
 
-// Gestion des flash messages
+/**
+ * Gestion des messages flash pour les retours utilisateur (succès/erreur).
+ */
 if (!function_exists('set_flash_message')) {
+    /**
+     * Définit un message flash à afficher à l'utilisateur.
+     * @param string $msg
+     */
     function set_flash_message($msg) {
         $_SESSION['flash_message'] = $msg;
     }
+
+    /**
+     * Récupère puis supprime le message flash courant.
+     * @return string|null
+     */
     function get_flash_message() {
         if (!empty($_SESSION['flash_message'])) {
             $msg = $_SESSION['flash_message'];
@@ -20,9 +32,17 @@ if (!function_exists('set_flash_message')) {
     }
 }
 
+/**
+ * Contrôleur Trajet
+ *
+ * Gère l'affichage, la création, la modification et la suppression de trajets.
+ */
 class TrajetController
 {
-    // Page des trajets pour un utilisateur connecté
+    /**
+     * Affiche la liste des trajets à venir pour l'utilisateur connecté.
+     * Redirige vers le login si non connecté.
+     */
     public function mesTrajets()
     {
         if (empty($_SESSION['user'])) {
@@ -30,11 +50,13 @@ class TrajetController
             exit;
         }
         $trajets = TrajetModel::getTrajetsDisponiblesAvecInfos();
-        $agences = TrajetModel::getAgences(); // On passe la liste pour la modale edit
+        $agences = TrajetModel::getAgences();
         require __DIR__ . '/../Views/trajets.php';
     }
 
-    // Affiche le formulaire de création de trajet
+    /**
+     * Affiche le formulaire de création d'un trajet.
+     */
     public function formCreerTrajet($error = '', $old = [])
     {
         if (empty($_SESSION['user'])) {
@@ -45,7 +67,10 @@ class TrajetController
         require __DIR__ . '/../Views/trajet_creer.php';
     }
 
-    // Traite le formulaire de création
+    /**
+     * Traite la soumission du formulaire de création d'un trajet.
+     * Effectue les contrôles de cohérence.
+     */
     public function creerTrajet()
     {
         if (empty($_SESSION['user'])) {
@@ -55,15 +80,16 @@ class TrajetController
         $agences = TrajetModel::getAgences();
 
         $data = [
-            'depart'      => $_POST['depart'] ?? '',
-            'arrivee'     => $_POST['arrivee'] ?? '',
-            'date_depart' => $_POST['date_depart'] ?? '',
-            'heure_depart'=> $_POST['heure_depart'] ?? '',
-            'date_arrivee'=> $_POST['date_arrivee'] ?? '',
-            'heure_arrivee'=> $_POST['heure_arrivee'] ?? '',
-            'places'      => $_POST['places'] ?? ''
+            'depart'        => $_POST['depart'] ?? '',
+            'arrivee'       => $_POST['arrivee'] ?? '',
+            'date_depart'   => $_POST['date_depart'] ?? '',
+            'heure_depart'  => $_POST['heure_depart'] ?? '',
+            'date_arrivee'  => $_POST['date_arrivee'] ?? '',
+            'heure_arrivee' => $_POST['heure_arrivee'] ?? '',
+            'places'        => $_POST['places'] ?? ''
         ];
 
+        // Contrôles des champs
         $error = '';
         if (
             empty($data['depart']) || empty($data['arrivee']) ||
@@ -85,7 +111,7 @@ class TrajetController
             return;
         }
 
-        // Ajoute en base
+        // Ajout en BDD
         TrajetModel::ajouterTrajet(
             $_SESSION['user']['id'],
             $data['depart'],
@@ -95,20 +121,21 @@ class TrajetController
             $data['places']
         );
 
-        // Redirige vers trajets
         set_flash_message("Le trajet a été créé avec succès.");
         header("Location: /TOUCHE_PAS_AU_KLAXON/public/trajets");
         exit;
     }
 
-    // Suppression d'un trajet
+    /**
+     * Supprime un trajet (si l'utilisateur en est le créateur).
+     */
     public function deleteTrajet($id)
     {
         if (empty($_SESSION['user'])) {
             header("Location: /TOUCHE_PAS_AU_KLAXON/public/login");
             exit;
         }
-        // Sécurité : doit être le créateur
+        // Vérifie que l'utilisateur est le créateur du trajet
         $trajet = TrajetModel::findById($id);
         if (!$trajet || $trajet['id_createur'] != $_SESSION['user']['id']) {
             set_flash_message("Suppression interdite.");
@@ -116,12 +143,16 @@ class TrajetController
             exit;
         }
         TrajetModel::deleteTrajet($id);
-        set_flash_message("Le trajet a été supprimé");
+        set_flash_message("Le trajet a été supprimé.");
         header("Location: /TOUCHE_PAS_AU_KLAXON/public/trajets");
         exit;
     }
 
-    // Edition d'un trajet en modal (POST depuis la modale)
+    /**
+     * Édite un trajet (si l'utilisateur en est le créateur, depuis la modale).
+     * @param int $id
+     * @return void
+     */
     public function editTrajet($id)
     {
         if (empty($_SESSION['user'])) {
@@ -135,13 +166,13 @@ class TrajetController
             exit;
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $depart      = $_POST['depart'] ?? '';
-            $arrivee     = $_POST['arrivee'] ?? '';
-            $date_depart = $_POST['date_depart'] ?? '';
-            $heure_depart= $_POST['heure_depart'] ?? '';
-            $date_arrivee= $_POST['date_arrivee'] ?? '';
+            $depart        = $_POST['depart'] ?? '';
+            $arrivee       = $_POST['arrivee'] ?? '';
+            $date_depart   = $_POST['date_depart'] ?? '';
+            $heure_depart  = $_POST['heure_depart'] ?? '';
+            $date_arrivee  = $_POST['date_arrivee'] ?? '';
             $heure_arrivee = $_POST['heure_arrivee'] ?? '';
-            $places      = $_POST['places'] ?? '';
+            $places        = $_POST['places'] ?? '';
 
             if (
                 empty($depart) || empty($arrivee) ||
@@ -168,6 +199,4 @@ class TrajetController
         }
     }
 }
-
-
 

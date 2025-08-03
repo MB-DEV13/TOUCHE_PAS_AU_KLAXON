@@ -3,7 +3,9 @@
 <div class="container mt-4">
 
   <?php
-  // Affiche le message flash s'il existe
+  /**
+   * Affichage d'un éventuel message flash en haut de la page
+   */
   if (function_exists('get_flash_message')) {
     if ($msg = get_flash_message()) {
       echo '<div class="alert alert-success" style="border-radius: 10px;">' . htmlspecialchars($msg) . '</div>';
@@ -47,7 +49,7 @@
               <td><?= date('H:i', strtotime($trajet['date_arrivee'])) ?></td>
               <td><?= (int)$trajet['places_disponibles'] ?></td>
               <td class="text-center">
-                <!-- Voir les infos (modale) -->
+                <!-- Bouton voir les infos complémentaires du trajet (modale) -->
                 <button
                   class="btn btn-link p-0 me-2"
                   data-bs-toggle="modal"
@@ -55,8 +57,8 @@
                   title="Voir infos">
                   <span class="bi bi-eye"></span>
                 </button>
-                <?php if ($_SESSION['user']['id'] == $trajet['id_createur']): ?>
-                  <!-- Modifier (ouvre le modal) -->
+                <?php if (isset($_SESSION['user']['id']) && $_SESSION['user']['id'] == $trajet['id_createur']): ?>
+                  <!-- Bouton modifier le trajet (ouvre la modale d'édition) -->
                   <button
                     class="btn btn-link p-0 me-2"
                     data-bs-toggle="modal"
@@ -64,15 +66,15 @@
                     title="Modifier">
                     <span class="bi bi-pencil"></span>
                   </button>
-                  <!-- Supprimer (direct) -->
-                  <a href="/TOUCHE_PAS_AU_KLAXON/public/trajet/delete/<?= $trajet['id_trajet'] ?>" class="btn btn-link p-0 text-danger" title="Supprimer">
+                  <!-- Lien supprimer le trajet (action directe) -->
+                  <a href="/TOUCHE_PAS_AU_KLAXON/public/trajet/delete/<?= $trajet['id_trajet'] ?>" class="btn btn-link p-0 text-danger" title="Supprimer" onclick="return confirm('Supprimer ce trajet ?');">
                     <span class="bi bi-trash"></span>
                   </a>
                 <?php endif; ?>
               </td>
             </tr>
 
-            <!-- Modal infos complémentaires -->
+            <!-- Modal infos complémentaires du trajet -->
             <div class="modal fade" id="modalInfos<?= $trajet['id_trajet'] ?>" tabindex="-1" aria-labelledby="infosModalLabel<?= $trajet['id_trajet'] ?>" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -92,8 +94,8 @@
               </div>
             </div>
 
-            <!-- Modal édition trajet -->
-            <?php if ($_SESSION['user']['id'] == $trajet['id_createur'] && isset($agences)): ?>
+            <!-- Modal édition trajet (seulement pour l'auteur du trajet) -->
+            <?php if (isset($_SESSION['user']['id']) && $_SESSION['user']['id'] == $trajet['id_createur'] && isset($agences)): ?>
             <div class="modal fade" id="modalEdit<?= $trajet['id_trajet'] ?>" tabindex="-1" aria-labelledby="editModalLabel<?= $trajet['id_trajet'] ?>" aria-hidden="true">
               <div class="modal-dialog">
                 <form method="post" action="/TOUCHE_PAS_AU_KLAXON/public/trajet/edit/<?= $trajet['id_trajet'] ?>">
@@ -103,7 +105,7 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                     </div>
                     <div class="modal-body">
-                      <!-- Départ (select) -->
+                      <!-- Sélection du départ -->
                       <div class="mb-3">
                         <label class="form-label">Départ</label>
                         <select name="depart" class="form-select" required>
@@ -116,7 +118,7 @@
                           <?php endforeach; ?>
                         </select>
                       </div>
-                      <!-- Date/Heure départ -->
+                      <!-- Date et heure de départ -->
                       <div class="row">
                         <div class="col mb-3">
                           <label class="form-label">Date départ</label>
@@ -127,7 +129,7 @@
                           <input type="time" name="heure_depart" class="form-control" value="<?= date('H:i', strtotime($trajet['date_depart'])) ?>" required>
                         </div>
                       </div>
-                      <!-- Arrivée (select) -->
+                      <!-- Sélection de l'arrivée -->
                       <div class="mb-3">
                         <label class="form-label">Destination</label>
                         <select name="arrivee" class="form-select" required>
@@ -140,7 +142,7 @@
                           <?php endforeach; ?>
                         </select>
                       </div>
-                      <!-- Date/Heure arrivée -->
+                      <!-- Date et heure d'arrivée -->
                       <div class="row">
                         <div class="col mb-3">
                           <label class="form-label">Date arrivée</label>
@@ -151,6 +153,7 @@
                           <input type="time" name="heure_arrivee" class="form-control" value="<?= date('H:i', strtotime($trajet['date_arrivee'])) ?>" required>
                         </div>
                       </div>
+                      <!-- Nombre de places -->
                       <div class="mb-3">
                         <label class="form-label">Places</label>
                         <input type="number" name="places" class="form-control" value="<?= (int)$trajet['places_total'] ?>" min="1" max="50" required>
@@ -174,4 +177,5 @@
 </div>
 
 <?php require __DIR__ . '/layouts/footer.php'; ?>
+
 

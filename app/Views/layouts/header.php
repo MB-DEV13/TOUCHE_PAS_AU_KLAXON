@@ -1,4 +1,9 @@
 <?php
+/**
+ * Header principal du site "Touche pas au klaxon"
+ * - Affiche un menu responsive (burger sous 970px)
+ * - Respecte l’état de connexion
+ */
 if (session_status() === PHP_SESSION_NONE) session_start();
 $isLoginPage = (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/login') !== false);
 ?>
@@ -11,26 +16,6 @@ $isLoginPage = (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI']
     <link rel="stylesheet" href="/TOUCHE_PAS_AU_KLAXON/public/assets/css/style.css">
     <link rel="stylesheet" href="/TOUCHE_PAS_AU_KLAXON/node_modules/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="icon" type="image/png" href="/TOUCHE_PAS_AU_KLAXON/public/assets/images/fav.png">
-    <style>
-      @media (max-width: 970px) {
-        .desktop-menu { display: none !important; }
-        .burger-menu { display: flex !important; }
-      }
-      @media (min-width: 971px) {
-        .desktop-menu { display: flex !important; }
-        .burger-menu { display: none !important; }
-      }
-      .burger-menu .navbar-toggler-icon {
-        display: inline-block;
-        width: 2em;
-        height: 2em;
-        background-size: 100% 100%;
-        background-repeat: no-repeat;
-        background-position: center;
-        /* Icône burger dark #384050 */
-        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(56,64,80,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-      }
-    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
   <header class="d-flex justify-content-center my-4">
@@ -74,7 +59,7 @@ $isLoginPage = (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI']
         <button class="navbar-toggler ms-2" type="button" id="burgerToggler" aria-controls="navbarBurgerMenu" aria-expanded="false" aria-label="Menu">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse position-absolute end-0 mt-5" id="navbarBurgerMenu" style="min-width: 220px; z-index:999; background:transparent;">
+        <div class="navbar-collapse position-absolute end-0 mt-5" id="navbarBurgerMenu" style="min-width: 220px; z-index:999; background:transparent;">
           <div class="bg-white rounded shadow p-3">
             <?php if (empty($_SESSION['user'])): ?>
               <?php if ($isLoginPage): ?>
@@ -101,48 +86,40 @@ $isLoginPage = (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI']
     </div>
   </header>
 
-<!-- ... suite de ta page ... -->
-
-<!-- Ajoute Bootstrap JS si tu l’utilises, sinon juste ce JS -->
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const burgerBtn = document.getElementById('burgerToggler');
-    const burgerMenu = document.getElementById('navbarBurgerMenu');
-    let menuOpen = false;
-    burgerBtn.addEventListener('click', function(e) {
-      menuOpen = !menuOpen;
-      burgerMenu.classList.toggle('show', menuOpen);
-      burgerBtn.setAttribute('aria-expanded', menuOpen ? 'true' : 'false');
-    });
-    // Fermer le menu si on clique en dehors
-    document.addEventListener('click', function(e) {
-      if (
-        menuOpen &&
-        !burgerMenu.contains(e.target) &&
-        !burgerBtn.contains(e.target)
-      ) {
-        burgerMenu.classList.remove('show');
-        burgerBtn.setAttribute('aria-expanded', 'false');
-        menuOpen = false;
-      }
-    });
-    // (Optionnel) Fermer le menu sur lien cliqué
-    burgerMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        burgerMenu.classList.remove('show');
-        burgerBtn.setAttribute('aria-expanded', 'false');
-        menuOpen = false;
-      });
+/**
+ * Menu burger responsive sans Bootstrap JS
+ * - Affiche/masque le menu
+ * - Ferme au clic dehors ou sur un lien
+ */
+document.addEventListener("DOMContentLoaded", function() {
+  const burgerBtn = document.getElementById('burgerToggler');
+  const burgerMenu = document.getElementById('navbarBurgerMenu');
+  let menuOpen = false;
+  burgerBtn.addEventListener('click', function(e) {
+    menuOpen = !menuOpen;
+    burgerMenu.classList.toggle('show', menuOpen);
+    burgerBtn.setAttribute('aria-expanded', menuOpen ? 'true' : 'false');
+  });
+  // Fermer le menu si on clique en dehors
+  document.addEventListener('click', function(e) {
+    if (
+      menuOpen &&
+      !burgerMenu.contains(e.target) &&
+      !burgerBtn.contains(e.target)
+    ) {
+      burgerMenu.classList.remove('show');
+      burgerBtn.setAttribute('aria-expanded', 'false');
+      menuOpen = false;
+    }
+  });
+  // Fermer le menu sur lien cliqué (mobile)
+  burgerMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      burgerMenu.classList.remove('show');
+      burgerBtn.setAttribute('aria-expanded', 'false');
+      menuOpen = false;
     });
   });
+});
 </script>
-
-
-
-
-
-
-
-
-
-

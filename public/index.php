@@ -1,5 +1,4 @@
 <?php
-// public/index.php
 
 // Autoload PSR-4 simple
 spl_autoload_register(function ($class) {

@@ -1,5 +1,4 @@
 <?php
-// app/Controllers/AuthController.php
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -7,12 +6,19 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once __DIR__ . '/../Models/UserModel.php';
 
-class AuthController {
+/**
+ * Contrôleur d'authentification (connexion/déconnexion)
+ */
+class AuthController
+{
     /**
      * Affiche le formulaire de connexion.
-     * Si déjà connecté, redirige selon le rôle.
+     * Redirige si déjà connecté.
+     *
+     * @param string $error Message d'erreur éventuel à afficher
      */
-    public function loginForm($error = '') {
+    public function loginForm($error = '')
+    {
         if (!empty($_SESSION['user'])) {
             if ($_SESSION['user']['role'] === 'admin') {
                 header("Location: /TOUCHE_PAS_AU_KLAXON/public/admin/dashboard");
@@ -25,9 +31,11 @@ class AuthController {
     }
 
     /**
-     * Gère la soumission du formulaire de connexion.
+     * Traite la soumission du formulaire de connexion.
+     *
      */
-    public function login() {
+    public function login()
+    {
         if (!empty($_POST['email']) && !empty($_POST['password'])) {
             $user = UserModel::findByEmail($_POST['email']);
             if ($user && password_verify($_POST['password'], $user['password'])) {
@@ -55,14 +63,14 @@ class AuthController {
     }
 
     /**
-     * Déconnexion
+     * Déconnecte l'utilisateur et redirige vers l'accueil.
+     *
+     * @return void
      */
-    public function logout() {
+    public function logout()
+    {
         session_destroy();
         header("Location: /TOUCHE_PAS_AU_KLAXON/public/");
         exit;
     }
 }
-
-
-

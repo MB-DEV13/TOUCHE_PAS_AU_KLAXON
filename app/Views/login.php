@@ -4,9 +4,19 @@
   <div class="card shadow-sm border-0 login-box mx-auto">
     <div class="card-body">
       <h2 class="card-title mb-4 text-center">Connexion</h2>
-      <?php if (!empty($error)): ?>
+
+      <?php
+      /**
+       * Affiche une alerte si une erreur d’identification a été passée par le contrôleur.
+       */
+      if (!empty($error)): ?>
         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
+
+      <!--
+        Formulaire de connexion
+        Méthode POST sécurisée
+      -->
       <form action="/TOUCHE_PAS_AU_KLAXON/public/login" method="post">
         <div class="mb-3">
           <label for="email" class="form-label">Adresse email</label>
@@ -23,4 +33,5 @@
 </div>
 
 <?php require __DIR__ . '/layouts/footer.php'; ?>
+
 
