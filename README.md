@@ -28,6 +28,9 @@ Elle permet de proposer, consulter et gérer des trajets entre différentes agen
 
 ### 1. **Cloner le projet**
 
+- Place le projet dans le dossier `htdocs` (XAMPP) ou configure ton virtualhost.
+- Accède à l’application via [http://localhost/TOUCHE_PAS_AU_KLAXON/public](http://localhost/TOUCHE_PAS_AU_KLAXON/public)
+
 ```bash
 git clone https://github.com/MB-DEV13/TOUCHE_PAS_AU_KLAXON.git
 cd TOUCHE_PAS_AU_KLAXON
@@ -56,11 +59,6 @@ define('DB_CHARSET', 'utf8mb4');
 ```bash
 composer install
 ```
-
-### 5. **Lancer le serveur local (XAMPP/WAMP/CLI)**
-
-- Place le projet dans le dossier `htdocs` (XAMPP) ou configure ton virtualhost.
-- Accède à l’application via [http://localhost/TOUCHE_PAS_AU_KLAXON/public](http://localhost/TOUCHE_PAS_AU_KLAXON/public)
 
 ---
 
